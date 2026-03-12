@@ -1,0 +1,51 @@
+Name: hot.rpc
+ListenOn: 0.0.0.0:8083
+Etcd:
+  Hosts:
+    - 127.0.0.1:32379
+  Key: hot.rpc
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 19091
+  Path: /metrics
+
+RedisConf:
+  Host: 127.0.0.1:36379
+  Type: node
+
+KqPusherConf:
+  Brokers:
+    - 127.0.0.1:39092
+  Topic: article-hot-events
+
+KqConsumerConf:
+  Name: article-hot-consumer
+  Brokers:
+    - 127.0.0.1:39092
+  Topic: article-hot-events
+  Group: article-hot-group
+
+HeavyKeeper:
+  Width: 1000
+  Depth: 5
+  Decay: 0.9
+  TopK: 100
+
+Interaction:
+  SyncEvery: 100
+  TTL: 3600
+  PartitionCount: 3
+  Weights:
+    - Code: 1
+      Name: "like"
+      Weight: 1
+    - Code: 2
+      Name: "comment"
+      Weight: 2
+    - Code: 3
+      Name: "coin"
+      Weight: 3
+    - Code: 4
+      Name: "share"
+      Weight: 4

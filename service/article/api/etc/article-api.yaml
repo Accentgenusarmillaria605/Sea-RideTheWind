@@ -1,0 +1,30 @@
+Name: article-api
+Host: 0.0.0.0
+Port: 8889
+
+ArticleRpcConf:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:32379
+    Key: article.rpc
+
+SecurityRpcConf:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:32379
+    Key: security.rpc
+
+Auth:
+  AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
+  AccessExpire: 31536000
+
+Log:
+  ServiceName: article-api
+  Mode: file
+  Path: ../../../log/article-api
+
+Telemetry:
+  Name: article-api
+  Endpoint: localhost:34317
+  Sampler: 1.0
+  Batcher: otlpgrpc

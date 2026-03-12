@@ -1,0 +1,41 @@
+Name: usercenter
+Host: 0.0.0.0
+Port: 8888
+
+Log:
+  ServiceName: usercenter
+  Mode: file        
+  Path: ../../../../log/user  
+
+UserAuth:
+  AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
+  AccessExpire: 2592000
+
+DevServer:
+  Enabled: true
+  Host: 0.0.0.0
+  Port: 9095
+  MetricsPath: /metrics
+  HealthPath: /healthz
+  EnableMetrics: true
+  EnablePprof: true
+
+
+
+BizRedis:
+  Host: 127.0.0.1:36379
+  Type: "node"
+  Pass: ""
+
+
+Telemetry:
+  Name: user-api
+  Endpoint: localhost:34317
+  Sampler: 1.0
+  Batcher: otlpgrpc
+
+UserRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:32379
+    Key: user.rpc

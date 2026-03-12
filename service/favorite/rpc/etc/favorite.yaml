@@ -1,0 +1,47 @@
+Name: favorite.rpc
+ListenOn: 0.0.0.0:8082
+
+Log:
+  ServiceName: favorite-rpc
+  Mode: file
+  Path: ../../../../log/favorite-rpc
+
+Postgres:
+  Host: "127.0.0.1"
+  Port: "35432"
+  User: "admin"
+  Password: "Sea-TryGo"
+  DBName: "first_db"
+  Mode: "disable"
+
+Telemetry:
+  Name: favorite-rpc
+  Endpoint: localhost:34317
+  Sampler: 1.0
+  Batcher: otlpgrpc
+
+DevServer:
+  Enabled: true
+  Host: 0.0.0.0
+  Port: 16062
+  MetricsPath: /metrics
+  HealthPath: /healthz
+  EnableMetrics: true
+  EnablePprof: true
+
+Etcd:
+  Hosts:
+    - 127.0.0.1:32379
+  Key: favorite.rpc
+
+UserRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:32379
+    Key: user.rpc
+
+ArticleRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:32379
+    Key: article.rpc

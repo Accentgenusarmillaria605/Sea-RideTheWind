@@ -1,0 +1,59 @@
+package main
+
+import (
+	"context"
+	"flag"
+	"fmt"
+	"github.com/zeromicro/go-queue/kq"
+	"github.com/zeromicro/go-zero/core/logx"
+	"sea-try-go/service/article/rpc/internal/config"
+	"sea-try-go/service/article/rpc/internal/model"
+	"sea-try-go/service/article/rpc/internal/mqs"
+	"sea-try-go/service/article/rpc/internal/server"
+	"sea-try-go/service/article/rpc/internal/svc"
+	"sea-try-go/service/article/rpc/pb"
+	"sea-try-go/service/common/logger"
+
+	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/service"
+	"github.com/zeromicro/go-zero/zrpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+)
+
+var configFile = flag.String("f", "etc/article.yaml", "the config file")
+
+func main() {
+	flag.Parse()
+
+	var c config.Config
+	conf.MustLoad(*configFile, &c)
+
+	logx.MustSetup(c.Log)
+	logger.Init(c.Name)
+
+	serviceGroup := service.NewServiceGroup()
+	defer serviceGroup.Stop()
+
+	u := model.NewArticleRepo(c)
+	ctx := svc.NewServiceContext(c, u)
+
+	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
+		__.RegisterArticleServiceServer(grpcServer, server.NewArticleServiceServer(ctx))
+
+		if c.Mode == service.DevMode || c.Mode == service.TestMode {
+			reflection.Register(grpcServer)
+		}
+	})
+	defer s.Stop()
+
+	serviceGroup.Add(s)
+
+	// Add Kafka consumer
+	consumer := mqs.NewArticleConsumer(context.Background(), ctx)
+	serviceGroup.Add(kq.MustNewQueue(c.KqConsumerConf, consumer))
+
+	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
+	fmt.Printf("Starting kafka consumer...\n")
+	serviceGroup.Start()
+}

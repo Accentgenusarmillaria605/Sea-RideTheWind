@@ -1,0 +1,11 @@
+/data
+/volumes
+/log
+/data
+
+
+.env
+go.mod
+*.exe
+
+.gocache

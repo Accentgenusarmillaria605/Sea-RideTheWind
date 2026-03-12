@@ -1,0 +1,66 @@
+Name: article.rpc
+ListenOn: 0.0.0.0:9001
+Etcd:
+  Hosts:
+  - 127.0.0.1:32379
+  Key: article.rpc
+
+Postgres:
+  Host: 127.0.0.1
+  Port: "35432"
+  User: admin
+  Password: "Sea-TryGo"
+  DBName: first_db
+
+Log:
+  ServiceName: article-rpc
+  Mode: file
+  Path: ../../../log/article-rpc
+
+Prometheus:
+  Host: 0.0.0.0
+  Port: 9092
+  Path: /metrics
+
+KqPusherConf:
+  Name: article-mq-pusher
+  Group: "article-creation-group"
+  Brokers:
+    - 127.0.0.1:39092
+  Topic: article-creation-topic
+
+MinIO:
+  Endpoint: "127.0.0.1:39000"
+  AccessKeyID: "minioadmin"
+  SecretAccessKey: "minioadmin"
+  BucketName: "articles"
+  UseSSL: false
+  ImagePath: "articles/images/"
+  ArticlePath: "articles/content/"
+
+KqConsumerConf:
+  Name: dataclean-consumer
+  Brokers:
+    - 127.0.0.1:39092
+  Group: dataclean
+  Topic: article-creation-topic
+  Offset: first
+  Consumers: 1
+
+Telemetry:
+  Name: article-rpc
+  Endpoint: localhost:34317     # OTLP gRPC 端口
+  Sampler: 1.0
+  Batcher: otlpgrpc            # 替代原来的 jaeger
+
+HotEventPusherConf:
+  Brokers:
+    - 127.0.0.1:39092       # 指向基础架构的 Kafka 集群Topic: article-hot-events  # 强约束：必须为该固定 Topic
+  Topic: article-hot-events
+
+SecurityConf:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:32379
+    Key: security.rpc
+  Timeout: 10000

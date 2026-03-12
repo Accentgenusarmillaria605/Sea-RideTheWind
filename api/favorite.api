@@ -1,0 +1,141 @@
+syntax = "v1"
+
+info (
+	title:   "Favorite API"
+	desc:    "收藏模块 HTTP 网关，对接 FavoriteService gRPC"
+	version: "1.0.0"
+)
+
+type FavoriteFolder {
+	FolderId  int64  `json:"folderId,string"`
+	Name      string `json:"name"`
+	CreatedAt int64  `json:"createdAt"`
+	UpdatedAt int64  `json:"updatedAt"`
+}
+
+type FavoriteItem {
+	FavoriteId int64  `json:"favoriteId,string"`
+	FolderId   int64  `json:"folderId,string"`
+	TargetId   int64  `json:"targetId,string"`
+	TargetType string `json:"targetType"`
+	Title      string `json:"title,optional"`
+	Cover      string `json:"cover,optional"`
+	CreatedAt  int64  `json:"createdAt"`
+}
+
+/************** 1. 新增收藏夹 **************/
+type CreateFavoriteFolderReq {
+	Name string `json:"name"`
+}
+
+type CreateFavoriteFolderResp {
+	FolderId int64 `json:"folderId,string"`
+}
+
+/************** 2. 新增收藏 **************/
+type CreateFavoriteReq {
+	FolderId   int64  `json:"folderId,string"`
+	TargetId   int64  `json:"targetId,string"`
+	TargetType string `json:"targetType"`
+	Title      string `json:"title,optional"`
+	Cover      string `json:"cover,optional"`
+}
+
+type CreateFavoriteResp {
+	FavoriteId int64 `json:"favoriteId,string"`
+}
+
+/************** 3. 删除收藏夹 **************/
+type DeleteFavoriteFolderReq {
+	FolderId int64 `json:"folderId,string"`
+}
+
+type DeleteFavoriteFolderResp {
+	Success bool `json:"success"`
+}
+
+/************** 4. 删除收藏 **************/
+type DeleteFavoriteReq {
+	FavoriteId int64 `json:"favoriteId,string"`
+}
+
+type DeleteFavoriteResp {
+	Success bool `json:"success"`
+}
+
+/************** 5. 修改收藏夹名字 **************/
+type UpdateFavoriteFolderNameReq {
+	FolderId int64  `json:"folderId,string"`
+	Name     string `json:"name"`
+}
+
+type UpdateFavoriteFolderNameResp {
+	Success bool `json:"success"`
+}
+
+/************** 6. 查询收藏夹 **************/
+type GetFavoriteFoldersReq {}
+
+type GetFavoriteFoldersResp {
+	Folders []FavoriteFolder `json:"folders"`
+}
+
+/************** 7. 查询收藏夹下的收藏 **************/
+type GetFavoritesByFolderReq {
+	FolderId int64 `json:"folderId,string"`
+}
+
+type GetFavoritesByFolderResp {
+	Favorites []FavoriteItem `json:"favorites"`
+}
+
+@server (
+	prefix:     "/favorite/v1"
+	group:      "favorite"
+	jwt:        UserAuth
+	middleware: CheckBlacklistMiddleware
+)
+service favorite {
+	@doc (
+		createFavoriteFolder: "新增收藏夹"
+	)
+	@handler createFavoriteFolder
+	post /folder/create (CreateFavoriteFolderReq) returns (CreateFavoriteFolderResp)
+
+	@doc (
+		createFavorite: "新增收藏"
+	)
+	@handler createFavorite
+	post /item/create (CreateFavoriteReq) returns (CreateFavoriteResp)
+
+	@doc (
+		deleteFavoriteFolder: "删除收藏夹"
+	)
+	@handler deleteFavoriteFolder
+	delete /folder/delete (DeleteFavoriteFolderReq) returns (DeleteFavoriteFolderResp)
+
+	@doc (
+		deleteFavorite: "删除收藏"
+	)
+	@handler deleteFavorite
+	delete /item/delete (DeleteFavoriteReq) returns (DeleteFavoriteResp)
+
+	@doc (
+		updateFavoriteFolderName: "修改收藏夹名字"
+	)
+	@handler updateFavoriteFolderName
+	post /folder/update (UpdateFavoriteFolderNameReq) returns (UpdateFavoriteFolderNameResp)
+
+	@doc (
+		getFavoriteFolders: "查询收藏夹"
+	)
+	@handler getFavoriteFolders
+	get /folder/list (GetFavoriteFoldersReq) returns (GetFavoriteFoldersResp)
+
+	@doc (
+		getFavoritesByFolder: "查询收藏夹下的收藏"
+	)
+	@handler getFavoritesByFolder
+	get /item/list (GetFavoritesByFolderReq) returns (GetFavoritesByFolderResp)
+}
+

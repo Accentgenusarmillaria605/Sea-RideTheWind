@@ -1,0 +1,39 @@
+Name: admincenter
+Host: 0.0.0.0
+Port: 8889
+
+Log:
+  ServiceName: admincenter
+  Mode: file       
+  Path: ../../../../log/admin
+
+AdminAuth:
+  AccessSecret : "yU-hCm)2*?NQmWG"
+  AccessExpire : 2592000
+
+BizRedis:
+  Host: 127.0.0.1:36379
+  Type: "node"
+  Pass: ""
+
+Telemetry:
+  Name: admin-api
+  Endpoint: localhost:34317
+  Sampler: 1.0
+  Batcher: otlpgrpc
+
+DevServer:
+  Enabled: true
+  Host: 0.0.0.0
+  Port: 9096
+  MetricsPath: /metrics
+  HealthPath: /healthz
+  EnableMetrics: true
+  EnablePprof: true
+
+
+AdminRpc:
+ Etcd:
+  Hosts:
+   - 127.0.0.1:32379
+  Key: admin.rpc

@@ -1,0 +1,33 @@
+Name: like-mq
+
+Kafka:
+  Name: like-mq-consumer
+  Brokers:
+    - 127.0.0.1:39092
+  Group: like-update-group
+  Topic: like_promotion_topic
+  Offset: first
+  Consumers: 8
+
+DevServer:
+  Enabled: true
+  Host: 0.0.0.0
+  Port: 9100
+  MetricsPath: /metrics
+  HealthPath: /healthz
+  EnableMetrics: true
+  EnablePprof: true
+
+HotEventPusherConf:
+  Brokers:
+    - 127.0.0.1:39092
+  Topic: article-hot-events
+
+Telemetry:
+  Name: like-mq               
+  Endpoint: localhost:34317    
+  Sampler: 1.0                 
+  Batcher: otlpgrpc           
+
+DB:
+  DataSource: postgres://admin:Sea-TryGo@127.0.0.1:35432/first_db?sslmode=disable

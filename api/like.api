@@ -1,0 +1,133 @@
+syntax = "v1"
+
+info (
+	title:   "Like Center API"
+	desc:    "点赞系统中心 HTTP 网关,对接 LikeService gRPC"
+	version: "1.0.0"
+)
+
+type LikeActionReq {
+	TargetType  string  `json:"target_type"`
+	TargetId    string  `json:"target_id"`
+	ActionType  int64   `json:"action_type,options=1|2|3|4"`
+	AuthorId    int64   `json:"author_id,string"`
+	Weight      float64 `json:"weight,optional"`
+	ClientIp    string  `json:"client_ip,optional"`
+	PromotionId string  `json:"promotion_id,optional"`
+}
+
+type LikeActionResp {
+	Success      bool   `json:"success"`
+	Message      string `json:"message"`
+	LikeCount    int64  `json:"like_count"`
+	DislikeCount int64  `json:"dislike_count"`
+}
+
+type GetLikeCountReq {
+	TargetType string   `json:"target_type"`
+	TargetIds  []string `json:"target_ids"`
+}
+
+type LikeCountItem {
+	LikeCount    int64 `json:"like_count"`
+	DislikeCount int64 `json:"dislike_count"`
+}
+
+type GetLikeCountResp {
+	Counts map[string]LikeCountItem `json:"counts"`
+}
+
+type GetLikeStateReq {
+	TargetType string   `json:"target_type"`
+	TargetIds  []string `json:"target_ids"`
+}
+
+type GetLikeStateResp {
+	States map[string]int32 `json:"states"`
+}
+
+type GetUserLikeListReq {
+	TargetType string `json:"target_type"`
+	Cursor     int64  `json:"cursor"`
+	PageSize   int32  `json:"page_size"`
+}
+
+type LikeRecordItem {
+	TargetType string `json:"target_type"`
+	TargetId   string `json:"target_id"`
+	Timestamp  int64  `json:"timestamp"`
+}
+
+type GetUserLikeListResp {
+	List       []LikeRecordItem `json:"list"`
+	IsEnd      bool             `json:"is_end"`
+	NextCursor int64            `json:"next_cursor"`
+}
+
+type GetTargetLikerListReq {
+	TargetType string `json:"target_type"`
+	TargetId   string `json:"target_id"`
+	Cursor     int64  `json:"cursor"`
+	PageSize   int32  `json:"page_size"`
+}
+
+type LikeItem {
+	UserId    int64 `json:"user_id"`
+	Timestamp int64 `json:"timestamp"`
+}
+
+type GetTargetLikerListResp {
+	List       []LikeItem `json:"list"`
+	IsEnd      bool       `json:"is_end"`
+	NextCursor int64      `json:"next_cursor"`
+}
+
+type GetUserTotalLikeReq {}
+
+type GetUserTotalLikeResp {
+	TotalLikeCount int64 `json:"total_like_count"`
+}
+
+@server (
+	prefix: "/like/v1"
+	group:  "like"
+	jwt:    UserAuth
+)
+service likecenter {
+	@doc (
+		LikeAction: "执行操作"
+	)
+	@handler LikeAction
+	post /likeaction (LikeActionReq) returns (LikeActionResp)
+
+	@doc (
+		GetLikeCount: "查询作品点赞数"
+	)
+	@handler GetLikeCount
+	post /getlikecount (GetLikeCountReq) returns (GetLikeCountResp)
+
+	@doc (
+		GetLikeState: "获取用户点赞状态"
+	)
+	@handler GetLikeState
+	post /getlikestate (GetLikeStateReq) returns (GetLikeStateResp)
+
+	@doc (
+		GetUserLikeList: "获取用户点赞列表"
+	)
+	@handler GetUserLikeList
+	post /getuserlikelist (GetUserLikeListReq) returns (GetUserLikeListResp)
+
+	@doc (
+		GetTargetLikerList: "获取目标作品的点赞人列表"
+	)
+	@handler GetTargetLikerList
+	post /gettargetlikerlist (GetTargetLikerListReq) returns (GetTargetLikerListResp)
+
+	@doc (
+		GetUserTotalLike: "获取用户获赞总数"
+	)
+	@handler GetUserTotalLike
+	post /getusertotallike (GetUserTotalLikeReq) returns (GetUserTotalLikeResp)
+}
+
